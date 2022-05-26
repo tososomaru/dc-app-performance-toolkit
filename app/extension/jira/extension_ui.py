@@ -5,6 +5,7 @@ from selenium_ui.conftest import print_timing
 from selenium_ui.jira.pages.pages import Intercom
 from selenium_ui.jira.pages.selectors import IntercomSelectors
 
+
 def intercom_issue_load_action(webdriver, datasets):
     intercom_issue_page = get_intercom_issue_page(webdriver, datasets)
 
