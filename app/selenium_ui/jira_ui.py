@@ -63,9 +63,17 @@ Refer to `app/selenium_ui/jira/modules.py` for examples.
 """
 
 
-# def test_1_selenium_custom_action(jira_webdriver, jira_datasets, jira_screen_shots):
-#     extension_ui.app_specific_action(jira_webdriver, jira_datasets)
+# def test_1_selenium_intercom_issue_load_action(jira_webdriver, jira_datasets, jira_screen_shots):
+#     extension_ui.intercom_issue_load_action(jira_webdriver, jira_datasets)
 
+# def test_1_selenium_intercom_add_link_to_issue_action(jira_webdriver, jira_datasets, jira_screen_shots):
+#     extension_ui.intercom_add_link_to_issue_action(jira_webdriver, jira_datasets)
+
+# def test_1_selenium_intercom_chat_load_action(jira_webdriver, jira_datasets, jira_screen_shots):
+#     extension_ui.intercom_chat_load_action(jira_webdriver, jira_datasets)
+
+# def test_1_selenium_intercom_chat_information_load_action(jira_webdriver, jira_datasets, jira_screen_shots):
+#     extension_ui.intercom_chat_information_load_action(jira_webdriver, jira_datasets)
 
 # this action should be the last one
 def test_2_selenium_z_log_out(jira_webdriver, jira_datasets, jira_screen_shots):

@@ -3,6 +3,7 @@ from selenium_ui.conftest import retry
 import time
 import random
 import json
+import string
 
 from selenium_ui.base_page import BasePage
 from selenium_ui.jira.pages.selectors import UrlManager, LoginPageLocators, DashboardLocators, PopupLocators, \
@@ -248,3 +249,18 @@ class Board(BasePage):
 
     def wait_for_scrum_board_backlog(self):
         self.wait_until_present(BoardLocators.scrum_board_backlog_content)
+
+
+class Intercom(BasePage):
+    page_loaded_selector = IssueLocators.issue_title
+
+    def __init__(self, driver, issue_key=None):
+        BasePage.__init__(self, driver)
+        url_manager_modal = UrlManager(issue_key=issue_key)
+        self.page_url = url_manager_modal.issue_url()
+
+    def generate_random_id(self, length: int): 
+        return ''.join([random.choice(string.digits) for _ in range(length)]).strip('0')
+
+    def generate_link_url(self, id: int): 
+        return f"https://app.intercom.com/a/apps/oxenbs9q/conversations/{id}"

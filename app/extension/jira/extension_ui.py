@@ -1,44 +1,111 @@
+#should be in dc-app-performance-toolkit/app/extension/jira
 import random
 
-from selenium.webdriver.common.by import By
-
-from selenium_ui.base_page import BasePage
 from selenium_ui.conftest import print_timing
-from selenium_ui.jira.pages.pages import Login
-from util.conf import JIRA_SETTINGS
+from selenium_ui.jira.pages.pages import Intercom
+from selenium_ui.jira.pages.selectors import IntercomSelectors
 
+def intercom_issue_load_action(webdriver, datasets):
+    intercom_issue_page = get_intercom_issue_page(webdriver, datasets)
 
-def app_specific_action(webdriver, datasets):
-    page = BasePage(webdriver)
-    if datasets['custom_issues']:
-        issue_key = datasets['custom_issue_key']
-
-    # To run action as specific user uncomment code bellow.
-    # NOTE: If app_specific_action is running as specific user, make sure that app_specific_action is running
-    # just before test_2_selenium_z_log_out action
-    #
-    # @print_timing("selenium_app_specific_user_login")
-    # def measure():
-    #     def app_specific_user_login(username='admin', password='admin'):
-    #         login_page = Login(webdriver)
-    #         login_page.delete_all_cookies()
-    #         login_page.go_to()
-    #         login_page.set_credentials(username=username, password=password)
-    #         if login_page.is_first_login():
-    #             login_page.first_login_setup()
-    #         if login_page.is_first_login_second_page():
-    #             login_page.first_login_second_page_setup()
-    #         login_page.wait_for_page_loaded()
-    #     app_specific_user_login(username='admin', password='admin')
-    # measure()
-
-    @print_timing("selenium_app_custom_action")
+    @print_timing('selenium_intercom_issue_load')
     def measure():
-        @print_timing("selenium_app_custom_action:view_issue")
-        def sub_measure():
-            page.go_to_url(f"{JIRA_SETTINGS.server_url}/browse/{issue_key}")
-            page.wait_until_visible((By.ID, "summary-val"))  # Wait for summary field visible
-            page.wait_until_visible((By.ID, "ID_OF_YOUR_APP_SPECIFIC_UI_ELEMENT"))  # Wait for you app-specific UI element by ID selector
-        sub_measure()
+        intercom_issue_page.go_to()
+        intercom_issue_page.wait_for_page_loaded()
+
     measure()
 
+
+def intercom_add_link_to_issue_action(webdriver, datasets):
+    intercom_issue_page = get_intercom_issue_page(webdriver, datasets)
+
+    @print_timing('selenium_intercom_add_link')
+    def measure():
+        @print_timing('selenium_intercom_add_link:load_issue')
+        def sub_measure():
+            intercom_issue_page.go_to()
+            intercom_issue_page.wait_for_page_loaded()
+
+        sub_measure()
+
+        @print_timing('selenium_intercom_add_link:click_add_link_button')
+        def sub_measure():
+            con_url = intercom_issue_page.generate_link_url(intercom_issue_page.generate_random_id(10))
+
+            intercom_issue_page.wait_until_clickable(IntercomSelectors.add_link_button).click()
+            intercom_issue_page.wait_until_clickable(IntercomSelectors.link_input)
+            intercom_issue_page.get_element(IntercomSelectors.link_input).send_keys(con_url)
+
+        sub_measure()
+
+    measure()
+
+
+def intercom_chat_load_action(webdriver, datasets):
+    intercom_issue_page = get_intercom_issue_page(webdriver, datasets)
+
+    @print_timing('selenium_intercom_chat_load')
+    def measure():
+        @print_timing('selenium_intercom_chat_load:load_issue')
+        def sub_measure():
+            intercom_issue_page.go_to()
+            intercom_issue_page.wait_for_page_loaded()
+            intercom_issue_page.wait_until_visible(IntercomSelectors.conversation_button)
+
+        sub_measure()
+
+        @print_timing('selenium_intercom_chat_load:click_chat_button')
+        def sub_measure():
+            chat_elements = intercom_issue_page.get_elements(IntercomSelectors.conversation_button)
+            random.choice(chat_elements).click()
+
+        sub_measure()
+
+        @print_timing('selenium_intercom_chat_load:wait_until_chat_load')
+        def sub_measure():
+            intercom_issue_page.wait_until_visible(IntercomSelectors.chat_selector)
+
+        sub_measure()
+
+    measure()
+
+
+def intercom_chat_information_load_action(webdriver, datasets):
+    intercom_issue_page = get_intercom_issue_page(webdriver, datasets)
+
+    @print_timing('selenium_intercom_chat_information_load_action')
+    def measure():
+        @print_timing('selenium_intercom_chat_information_load_action:load_issue')
+        def sub_measure():
+            intercom_issue_page.go_to()
+            intercom_issue_page.wait_for_page_loaded()
+            intercom_issue_page.wait_until_visible(IntercomSelectors.information_button)
+
+        sub_measure()
+
+        @print_timing('selenium_intercom_chat_information_load_action:click_chat_information_button')
+        def sub_measure():
+            chat_elements = intercom_issue_page.get_elements(IntercomSelectors.information_button)
+            random.choice(chat_elements).click()
+
+        sub_measure()
+
+        @print_timing('selenium_intercom_chat_information_load_action:wait_until_chat_information_load')
+        def sub_measure():
+            intercom_issue_page.wait_until_present(IntercomSelectors.all_information_inside_selector)
+
+        sub_measure()
+
+    measure()
+
+
+def get_intercom_issue_page(webdriver, datasets):
+    return Intercom(webdriver, get_issue_key(select_random_custom_issue_data(datasets)))
+
+
+def get_issue_key(issue_data): 
+    return issue_data[0]
+
+
+def select_random_custom_issue_data(datasets):
+    return random.choice(datasets['custom_issues'])

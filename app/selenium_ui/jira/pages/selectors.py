@@ -145,3 +145,11 @@ class BoardLocators:
     # Scrum boards
     scrum_board_backlog_content = (By.CSS_SELECTOR, "#ghx-backlog[data-rendered]:not(.browser-metrics-stale)")
     board_columns = (By.CSS_SELECTOR, ".ghx-column")
+
+class IntercomSelectors:
+    add_link_button = (By.XPATH, "//span[@aria-label='Link conversation']")
+    link_input = (By.XPATH, "//input[@placeholder='Intercom conversation URL']")
+    conversation_button = (By.XPATH, "//span[@aria-label='Conversation']")
+    chat_selector = (By.XPATH, "//span[@aria-label='Open Conversation']")
+    information_button = (By.XPATH, "//span[@aria-label='Open']")
+    all_information_inside_selector = (By.XPATH, "//div[.='Email']")
