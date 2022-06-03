@@ -13,12 +13,16 @@ jira_dataset = jira_datasets()
 @jira_measure("locust_intercom_add_conversation")
 def intercom_add_conversation(locust):
     raise_if_login_failed(locust)
-    issues = jira_dataset['issues']
+
+    issues = list(filter(lambda x: x[2] == 'AABIS', jira_dataset['issues']))
+
     issue = random.choice(issues)
     conversation_id = __generate_random_id(10)
     project_id = __get_project_id(issue[2])
+
     r = locust.post(f'/rest/intercom/latest/api/intercom/conversation/link?projectId={project_id}&'
                     f'conversationId={conversation_id}&issueId={issue[1]}', catch_response=True)
+
     assert r.ok
 
     if not jira_dataset.get('custom_issues'):
